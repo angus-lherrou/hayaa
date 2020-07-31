@@ -11,4 +11,4 @@ bin           = @["hayaa"]
 
 # Dependencies
 
-requires "nim >= 1.2.4"
+requires "nim >= 1.2.4", "illwill >= 0.2.0"
