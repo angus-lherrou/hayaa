@@ -71,7 +71,7 @@ proc put(tb: var TerminalBuffer, b: Board): void =
   for y in 2..b.len-3:
     for x in 2..b[0].len-3:
       if b[y][x] == alive:
-        tb.write(y, x, fgWhite, "O")
+        tb.write(x, y, fgWhite, "O")
 
   
 proc drawSeed(tb: var TerminalBuffer): Seed =
