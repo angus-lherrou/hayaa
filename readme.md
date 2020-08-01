@@ -4,6 +4,10 @@
 
 The name "Hayaa" comes from the Arabic word الحياة *al-Ḥayaa*, meaning "life".
 
+## Install with [Nimble](https://github.com/nim-lang/nimble)
+
+To install Hayaa, run `nimble install hayaa`.
+
 ## Notes
 * This isn't *truly* Conway's game, as there are edges to the board (your terminal's borders).
 * Note that the console input seems to miss quite a few keystrokes on Windows. I'm not sure why yet.
