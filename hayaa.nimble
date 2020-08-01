@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.2.1"
+version       = "0.3.0"
 author        = "Angus L'Herrou"
 description   = "Conway's Game of Life implemented in Nim"
 license       = "MIT"

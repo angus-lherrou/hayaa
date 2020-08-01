@@ -1,10 +1,7 @@
-# Angus L'Herrou 7/31/2020
+# Angus L'Herrou 8/1/2020
 # github.com/angus-lherrou/hayaa
 
 import sequtils
-import unicode
-import os
-
 import illwill
 
 type
@@ -68,56 +65,53 @@ proc apply(b: var Board, s: Seed): void =
 
 
 proc put(tb: var TerminalBuffer, b: Board): void =
-  for y in 2..b.len-3:
+  for y in 3..b.len-3:
     for x in 2..b[0].len-3:
       if b[y][x] == alive:
-        tb.write(x, y, fgWhite, "O")
+        tb.write(x, y, "O")
 
   
-proc drawSeed(tb: var TerminalBuffer): Seed =
-  result = Seed.new[]
+proc drawSeed(tb: var TerminalBuffer): Board =
+  result = newboard(terminalWidth(), terminalHeight())
   tb.write(2, 0, "Move cursor with wasd and press space to fill.")
-  tb.write(2, 1, "Press Q to run the game.")
-  tb.display()
+  tb.write(2, 1, "Press Enter to run the game.")
+  
   var xPos = 2
-  var yPos = 2
+  var yPos = 3
+  
   tb.write(xPos, yPos, " ")
   var oldChar = tb[xPos, yPos]
   tb.write(xPos, yPos, "X")
+  
+  tb.display()
+  
   while true:
     let key = getKey()
-    tb.write(28, 1, $key)
+    
     case key
-    of W:
+    of W, A, S, D:
       tb[xPos, yPos] = oldChar
-      yPos = min(terminalHeight()-3, max(2, yPos-1))
-      oldChar = tb[xPos, yPos]
-      tb.write(xPos, yPos, "X")
-    of A:
-      tb[xPos, yPos] = oldChar
-      xPos = min(terminalWidth()-3, max(2, xPos-1))
-      oldChar = tb[xPos, yPos]
-      tb.write(xPos, yPos, "X")
-    of S:
-      tb[xPos, yPos] = oldChar
-      yPos = min(terminalHeight()-3, max(2, yPos+1))
-      oldChar = tb[xPos, yPos]
-      tb.write(xPos, yPos, "X")
-    of D:
-      tb[xPos, yPos] = oldChar
-      xPos = min(terminalWidth()-3, max(2, xPos+1))
+      case key
+      of W:
+        yPos = min(terminalHeight()-3, max(3, yPos-1))
+      of A:
+        xPos = min(terminalWidth()-3, max(2, xPos-1))
+      of S:
+        yPos = min(terminalHeight()-3, max(3, yPos+1))
+      of D:
+        xPos = min(terminalWidth()-3, max(2, xPos+1))
+      else:
+        continue
       oldChar = tb[xPos, yPos]
       tb.write(xPos, yPos, "X")
     of Space:
-      if tb[xPos, yPos].ch != "O".toRunes[0]:
+      if result[yPos][xPos] == dead:
         tb.write(xPos, yPos, "O")
-        oldChar = tb[xPos, yPos]
-        result.add((xPos, yPos))
       else:
         tb.write(xPos, yPos, " ")
-        oldChar = tb[xPos, yPos]
-        result.add((xPos, yPos))
-    of Q:
+      oldChar = tb[xPos, yPos]
+      result[yPos][xPos] = result[yPos][xPos].flip
+    of Enter:
       break
     else:
       continue
@@ -131,36 +125,31 @@ proc exitProc() {.noconv.} =
   quit(0)
 
 
-proc gameOver(tb: var TerminalBuffer) =
-  tb.clear()
-  tb.write(2, terminalHeight()/%2, "Game over! Press Ctrl+C to quit.")
-  tb.display()
-  while true:
-    continue
-
-
 proc runGame(tb: var TerminalBuffer, b: var Board, transition: proc) =
+  hideCursor()
+  tb.write(2, 1, "Press Ctrl+C to quit.")
   while true:
-    hideCursor()
-    tb.clear()
+    tb.fill(2, 3, terminalWidth()-3, terminalHeight()-3)
     tb.put(b)
     tb.display()
     let t = b.tick
-    if t.len == 0: break
     b.apply(t)
     transition()
-  tb.gameOver()
 
 
 proc main =
   var tb = newTerminalBuffer(terminalWidth(), terminalHeight())
-  tb.setForegroundColor(fgBlack, true)
-
+  var bb = newBoxBuffer(terminalWidth(), terminalHeight())
+  bb.drawRect(1, 2, terminalWidth()-2, terminalHeight()-2)
+  
   illwillInit(fullscreen=true)
   setControlCHook(exitProc)
-
-  var b = newboard(terminalWidth(), terminalHeight())
-  b.apply(tb.drawSeed())
+  
+  tb.write(bb)
+  
+  var b = tb.drawSeed()
+  
   tb.clear()
-
-  runGame(tb, b, proc = 100.sleep)
+  tb.write(bb)
+  
+  runGame(tb, b, proc = return)

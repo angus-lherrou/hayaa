@@ -1,4 +1,4 @@
-# Hayaa 0.2.1
+# Hayaa 0.3.0
 
 `hayaa` is a terminal implementation of Conway's Game of Life.
 
