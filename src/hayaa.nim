@@ -52,7 +52,7 @@ func age(c: CellContext): bool =
   of dead:
     if neighbors.count_live_neighbors == 3: true else: false
   of alive:
-    if neighbors.count_live_neighbors in {1, 4}: true else: false
+    if neighbors.count_live_neighbors in {2, 3}: false else: true
 
 
 func tick(b: Board): Seed =
