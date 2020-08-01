@@ -1,2 +1,2 @@
-include hayaa
+include game
 main()
