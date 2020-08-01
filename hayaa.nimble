@@ -1,11 +1,11 @@
 # Package
 
-version       = "0.2.0"
+version       = "0.2.1"
 author        = "Angus L'Herrou"
 description   = "Conway's Game of Life implemented in Nim"
 license       = "MIT"
 srcDir        = "src"
-bin           = @["main"]
+bin           = @["hayaa"]
 
 
 
