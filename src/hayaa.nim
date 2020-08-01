@@ -52,7 +52,7 @@ func age(c: CellContext): bool =
   of dead:
     if neighbors.count_live_neighbors == 3: true else: false
   of alive:
-    if neighbors.count_live_neighbors in {1, 4}: true else: false
+    if neighbors.count_live_neighbors in {2, 3}: false else: true
 
 
 func tick(b: Board): Seed =
@@ -124,10 +124,32 @@ proc drawSeed(tb: var TerminalBuffer): Seed =
     tb.display()
   tb.display()
 
+
 proc exitProc() {.noconv.} =
   illwillDeinit()
   showCursor()
   quit(0)
+
+
+proc gameOver(tb: var TerminalBuffer) =
+  tb.clear()
+  tb.write(2, terminalHeight()/%2, "Game over! Press Ctrl+C to quit.")
+  tb.display()
+  while true:
+    continue
+
+
+proc runGame(tb: var TerminalBuffer, b: var Board, transition: proc) =
+  while true:
+    hideCursor()
+    tb.clear()
+    tb.put(b)
+    tb.display()
+    let t = b.tick
+    if t.len == 0: break
+    b.apply(t)
+    transition()
+  tb.gameOver()
 
 
 proc main =
@@ -138,19 +160,7 @@ proc main =
   setControlCHook(exitProc)
 
   var b = newboard(terminalWidth(), terminalHeight())
-  #b.apply(@[(2, 4), (3, 4), (4, 4), (4, 3), (3, 2)])
   b.apply(tb.drawSeed())
   tb.clear()
-  while true:
-    tb.clear()
-    hideCursor()
-    tb.put(b)
-    tb.display()
-    hideCursor()
-    let t = b.tick
-    if t.len == 0: break
-    b.apply(t)
-    100.sleep
-  tb.write(0, terminalHeight()-1, "Game over!")
 
-main()
+  runGame(tb, b, proc = 100.sleep)
