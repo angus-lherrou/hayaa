@@ -1,5 +1,7 @@
 # Hayaa 0.2.1
 
+![title](title.png)
+
 `hayaa` is a terminal implementation of Conway's Game of Life.
 
 The name "Hayaa" comes from the Arabic word الحياة *al-Ḥayaa*, meaning "life".
