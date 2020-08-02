@@ -1,6 +1,6 @@
 # Hayaa 0.3.0
 
-![title](title.png)
+<img src="title.png" width="500px">
 
 `hayaa` is a terminal implementation of Conway's Game of Life.
 
